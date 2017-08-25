@@ -14,7 +14,6 @@ item_means.all = data %>%
 
 # Subject percentages
 subject.percentage.familiar = data %>%
-  #group_by(subject_id,rule,context,n.training) %>%
   group_by(subject_id, config_profile, training_list, rule, context, age, sex, n.training) %>%
   summarise(perc.F = mean(fam)*100) %>%
   ungroup()

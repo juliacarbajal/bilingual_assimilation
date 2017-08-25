@@ -24,13 +24,22 @@ if (subject.group == 0) {
 }
 source("scripts/load_data.R")
 
+# Total number of subjects tested:
+N.tested = length(unique(data$subject_id))
+
 # TIDY UP DATA ####
 source("scripts/clean_data.R")
 data$subject_id = as.factor(data$subject_id)
 
 
 # Total number of subjects included for analysis:
-length(unique(data$subject_id))
+cat("Total N included subjects: ", N.included)
+
+# Rejected subjects:
+cat("Total N rejected subjects: ", N.tested - N.included)
+
+# Rejected trials:
+cat("N discarded trials from included subjects: ", trials.discarded)
 
 # CALCULATE RELEVANT MEASURES ####
 source("scripts/measures.R")
