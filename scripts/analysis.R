@@ -31,6 +31,8 @@ N.tested = length(unique(data$subject_id))
 source("scripts/clean_data.R")
 data$subject_id = as.factor(data$subject_id)
 
+# Total number of subjects included for analysis:
+cat("Total N tested subjects: ", N.tested)
 
 # Total number of subjects included for analysis:
 cat("Total N included subjects: ", N.included)
@@ -69,17 +71,19 @@ ggplot(condition_means.list,aes(x=rule, y=mean,fill=context))+
 
 # 2.1 Grouped boxplots (rule x context, all subjects)
 
-#subject.percentage.familiar$context = factor(subject.percentage.familiar$context, levels=c('AV','AU'), labels=c("viable","unviable"))
-#subject.percentage.familiar$rule = factor(subject.percentage.familiar$rule, levels=c('voicing','place'))
+subject.percentage.familiar$context = factor(subject.percentage.familiar$context, levels=c('AV','AU'), labels=c("viable","unviable"))
+subject.percentage.familiar$rule = factor(subject.percentage.familiar$rule, levels=c('voicing','place'))
 
 ggplot(subject.percentage.familiar, aes(x=rule, y=perc.F,fill=context))+
   geom_boxplot(colour = "black", position='dodge') +
   ylim(0,100) + 
   xlab("Assimilation Rule") +
-  ylab("Percentage of Familiar word choice") +
+  ylab("Percentage of Familiar object choice") +
   theme(text = element_text(size = 22)) +
-  scale_fill_manual(values=c('#00bfc4','#ff6666')) # This line changes the order of the colours.
-
+  scale_fill_manual(values=c('#8fd0ff','#c2e5ff')) # This line changes the order of the colours.
+# Note: I'm using greens and blues for my BUCLD poster. Otherwise, default colours: '#00bfc4','#ff6666'
+# Greens (for monolingual data): c('#5ab345','#bde19a')
+# Blues (for bilingual data): c('#8fd0ff','#c2e5ff')
 
 # 2.2 Boxplots per list
 ggplot(subject.percentage.familiar, aes(x=rule, y=perc.F,fill=context))+
