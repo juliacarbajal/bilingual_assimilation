@@ -1,8 +1,10 @@
 # GET INFO FROM TRIAL NAME
 data = data %>%
   separate(object_asked,c("language","expe_part","rule","word","context"),"_") %>%
-  mutate(fam = ifelse(context=='AV' & correct==1,1,ifelse(context=='AU' & correct==0,1,0)))
+  mutate(fam = ifelse(context=='AV' & correct==1,1,ifelse(context=='AU' & correct==0,1,0))) %>%
+  mutate(block = level_name)
 
+data$block = as.numeric(data$block)
 data$rule = as.factor(data$rule)
 data$word = as.factor(data$word)
 data$context = as.factor(data$context)
