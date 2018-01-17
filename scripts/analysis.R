@@ -46,8 +46,23 @@ cat("N discarded trials from included subjects: ", trials.discarded)
 # CALCULATE RELEVANT MEASURES ####
 source("scripts/measures.R")
 
+# Group report (age, sex)
+included.agesex = subset(age_sex,subject_id %in% data$subject_id)
+summary(included.agesex)
 
 # MAIN PLOTS ####
+
+condition_means$context = factor(condition_means$context, levels=c('AV','AU'), labels=c("viable","unviable"))
+condition_means$rule = factor(condition_means$rule, levels=c('voicing','place'))
+
+# Group title (mono, bili) and colours for plotting:
+if (subject.group == 0) {
+  group.title   = 'Monolinguals'
+  group.colours = c('#5ab345','#bde19a')
+} else {
+  group.title   = 'Bilinguals'
+  group.colours = c('#3d98da','#c2e5ff')
+}
 
 # 1.1 Grouped barplots (rule x context, all subjects)
 ggplot(condition_means,aes(x=rule, y=mean,fill=context))+
@@ -55,9 +70,13 @@ ggplot(condition_means,aes(x=rule, y=mean,fill=context))+
   geom_errorbar(position=position_dodge(width = .9),aes(ymin=mean-se, ymax=mean+se),width=0.2) +
   ylim(0,100) + 
   xlab("Assimilation Rule") +
-  ylab("Mean Percentage of Familiar word choice") +
-  geom_text(aes(label = round(mean, digits = 1)), position = position_dodge(width = .9), vjust = -4) +
-  theme(text = element_text(size = 16))
+  ylab("Percentage of Familiar object choice") +
+  ggtitle(group.title) +
+  #geom_text(aes(label = round(mean, digits = 1)), position = position_dodge(width = .9), vjust = -4) +
+  theme(text = element_text(size = 23)) +
+  scale_fill_manual(values = group.colours) +
+  theme(legend.position = c(.85, .85))
+# Note: I'm using greens and blues for my BUCLD poster. Otherwise, default colours: '#00bfc4','#ff6666'
 
 # 1.2 Barplots per counterbalancing list
 ggplot(condition_means.list,aes(x=rule, y=mean,fill=context))+
@@ -92,6 +111,7 @@ ggplot(subject.percentage.familiar, aes(x=rule, y=perc.F,fill=context))+
   xlab("Assimilation Rule") +
   ylab("Percentage of Familiar word choice") +
   theme(text = element_text(size = 16))
+
 
 
 # WILCOXON TESTS FOR PLACE AND VOICING EFFECT ####
@@ -143,18 +163,25 @@ model.null = glmer(fam ~ 1 + (rule*context|subject_id) + (1+context|word), data=
 anova(model.null,data.glm1)
 
 # Significance of main effect of context:
-model.nocontext = glmer(fam ~ 1 + rule + interaction + (rule+context+interaction|subject_id) + (1+context|word), data=data, control=glmerControl('bobyqa'), family="binomial")
+model.nocontext = glmer(fam ~ 1 + rule + interaction + (rule*context|subject_id) + (1+context|word), data=data, control=glmerControl('bobyqa'), family="binomial")
 anova(model.nocontext,data.glm1) 
 
 # Significance of main effect of rule:
-model.norule = glmer(fam ~ 1 + context + interaction + (rule+context+interaction|subject_id) + (1+context|word), data=data, control=glmerControl('bobyqa'), family="binomial")
+model.norule = glmer(fam ~ 1 + context + interaction + (rule*context|subject_id) + (1+context|word), data=data, control=glmerControl('bobyqa'), family="binomial")
 anova(model.norule,data.glm1) 
 
 # Significance of interaction rule*context:
 model.nointeraction = glmer(fam ~ 1 + rule + context + (rule*context|subject_id) + (1+context|word), data=data, control=glmerControl('bobyqa'), family="binomial")
 anova(model.nointeraction,data.glm1)
 
+# Alternatively (since the reduced models may not converge) using car package:
+Anova(data.glm1, type="III")
 
+
+# CHECK FOR EFFECT OF BLOCK:
+model.block = glmer(fam ~ rule*context*block + (rule*context|subject_id) + (1+context|word), data=data, family="binomial", control=glmerControl('bobyqa'))
+summary(model.block)
+anova(data.glm1,model.block)
 
 # ADDITIONAL PLOTS ####
 
