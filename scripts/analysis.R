@@ -25,13 +25,11 @@ source("scripts/load_data.R")
 
 # Total number of subjects tested:
 N.tested = length(unique(data$subject_id))
+cat("Total N tested subjects: ", N.tested)
 
 # TIDY UP DATA ####
 source("scripts/clean_data.R")
 data$subject_id = as.factor(data$subject_id)
-
-# Total number of subjects tested:
-cat("Total N tested subjects: ", N.tested)
 
 # Total number of subjects included for analysis:
 cat("Total N included subjects: ", N.included)
