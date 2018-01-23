@@ -8,8 +8,7 @@ library(dplyr)
 library(tidyr)
 library(lme4)
 library(ggplot2)
-library(coin) # Needed for calculation of Exact Wilcoxon test
-library(car) # Needed to obtain p-values
+library(car)
 
 
 # Select group to analyse:
@@ -31,13 +30,13 @@ N.tested = length(unique(data$subject_id))
 source("scripts/clean_data.R")
 data$subject_id = as.factor(data$subject_id)
 
-# Total number of subjects included for analysis:
+# Total number of subjects tested:
 cat("Total N tested subjects: ", N.tested)
 
 # Total number of subjects included for analysis:
 cat("Total N included subjects: ", N.included)
 
-# Rejected subjects:
+# N Rejected subjects:
 cat("Total N rejected subjects: ", N.tested - N.included)
 
 # Rejected trials:

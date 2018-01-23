@@ -1,4 +1,7 @@
 # Additional exploratory plots and analyses (not pre-registered)
+# Run analysis.R script first!
+
+library(coin) # Needed for calculation of Exact Wilcoxon test
 
 
 # WILCOXON TESTS FOR PLACE AND VOICING EFFECT ####
