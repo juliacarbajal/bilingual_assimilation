@@ -10,8 +10,7 @@ library(lme4)
 library(ggplot2)
 library(car)
 library(ggthemes)
-library(extrafont)
-#font_import()
+library(grid)
 
 
 # Select group to analyse:
@@ -101,8 +100,8 @@ ggplot(condition_means,aes(x=rule, y=mean,fill=context))+
   geom_bar(colour = "black", position='dodge',stat='identity') +
   geom_errorbar(position=position_dodge(width = .9),aes(ymin=mean-se, ymax=mean+se),width=0.2) +
   scale_y_continuous(limits=c(0, 100), expand = c(0, 0)) +
-  xlab("Assimilation Rule") +
-  ylab("Percentage of Familiar object choice") +
+  xlab("Assimilation rule") +
+  ylab("Percentage of clicks on familiar object") +
   #ggtitle(group.title) +
   #theme(text = element_text(size = 23)) +
   scale_fill_manual(values = group.colours) +
@@ -116,14 +115,21 @@ dev.off()
 subject.percentage.familiar$context = factor(subject.percentage.familiar$context, levels=c('AV','AU'), labels=c("Viable","Unviable"))
 subject.percentage.familiar$rule = factor(subject.percentage.familiar$rule, levels=c('voicing','place'), labels = c('Voicing','Place'))
 
-png(paste("figures/boxplot",group.title,".png",sep=""), width = 12, height = 10, units = 'cm', res = 300)
-ggplot(subject.percentage.familiar, aes(x=rule, y=perc.F, fill=context))+
+p = ggplot(subject.percentage.familiar, aes(x=rule, y=perc.F, fill=context))+
   geom_boxplot(colour = "black", position='dodge') +
-  scale_y_continuous(limits=c(0, 100), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
   xlab("Assimilation rule") +
   ylab("Percentage of clicks on familiar object") +
   scale_fill_manual(values = group.colours) +
+  coord_cartesian(ylim = c(0, 100)) +
   theme_tufte_revised()
+
+# This part correct the clipping of data at the limit of the panel:
+png(paste("figures/boxplot",group.title,".png",sep=""), width = 12, height = 10, units = 'cm', res = 300)
+gb = ggplot_build(p)
+gt = ggplot_gtable(gb)
+gt$layout$clip[gt$layout$name=="panel"] = "off"
+grid.draw(gt)
 dev.off()
 
 
