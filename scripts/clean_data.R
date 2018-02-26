@@ -59,6 +59,7 @@ training.reps = training.data %>%
 data = merge(data, age_sex)
 data = merge(data, training.trials)
 data = merge(data, training.reps)
+data = subset(data, subject_id != '1624') # Child excluded because age was 3SD above mean monolinguals age
 if (subject.group == 1) {
   data = merge(data, vocab.B)
   N.trials = nrow(data)
